@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Services;
 
+use Rimba\Base\Actions\PutFingerPrint;
 use Rimba\Sync\Actions\FetchDatabaseData;
 use Rimba\Sync\Actions\FetchRestData;
-use Rimba\Base\Actions\PutFingerPrint;
 use Rimba\Sync\Models\ApiConfig;
 use Rimba\Sync\Models\ApiData;
 

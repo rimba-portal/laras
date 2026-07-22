@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Console\Commands;
 
-use Rimba\Sync\Models\ApiConfig;
-use Rimba\Sync\Services\FetchService;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Rimba\Sync\Models\ApiConfig;
+use Rimba\Sync\Services\FetchService;
 
 #[Description('Fetch data using API pipeline configs')]
 #[Signature('bites:fetch {identifier? : ID or name of the config}')]

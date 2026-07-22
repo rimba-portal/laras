@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages;
 
-use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\ApiConfigResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\ApiConfigResource;
 
 class ViewApiConfig extends ViewRecord
 {

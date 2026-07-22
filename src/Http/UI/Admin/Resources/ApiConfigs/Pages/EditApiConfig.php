@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages;
 
-use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\ApiConfigResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\ApiConfigResource;
 
 class EditApiConfig extends EditRecord
 {

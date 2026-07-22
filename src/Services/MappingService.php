@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Services;
 
-use Rimba\Sync\Models\ApiData;
 use Illuminate\Support\Facades\DB;
+use Rimba\Sync\Models\ApiData;
 
 class MappingService
 {

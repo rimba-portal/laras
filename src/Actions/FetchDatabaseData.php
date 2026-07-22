@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Actions;
 
-use Rimba\Sync\Contracts\DataFetcher;
 use Illuminate\Support\Facades\DB;
+use Rimba\Sync\Contracts\DataFetcher;
 
 class FetchDatabaseData implements DataFetcher
 {

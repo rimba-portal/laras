@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Rimba\Sync\Http\UI\Admin\Resources\ApiData;
 
 use BackedEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
 use Rimba\Sync\Http\UI\Admin\Resources\ApiData\Pages\CreateApiData;
 use Rimba\Sync\Http\UI\Admin\Resources\ApiData\Pages\EditApiData;
 use Rimba\Sync\Http\UI\Admin\Resources\ApiData\Pages\ListApiData;
 use Rimba\Sync\Http\UI\Admin\Resources\ApiData\Schemas\ApiDataForm;
 use Rimba\Sync\Http\UI\Admin\Resources\ApiData\Tables\ApiDataTable;
 use Rimba\Sync\Models\ApiData;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
 use UnitEnum;
 
 class ApiDataResource extends Resource

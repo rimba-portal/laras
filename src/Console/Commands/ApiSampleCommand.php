@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Console\Commands;
 
-use Rimba\Sync\Models\ApiConfig;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Rimba\Sync\Models\ApiConfig;
 use Symfony\Component\Yaml\Yaml;
 
 #[Description('Sample top 10 raw rows from API config (JSON/YAML)')]

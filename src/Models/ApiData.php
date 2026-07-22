@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Models;
 
-use Rimba\Sync\Observers\ApiDataObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Rimba\Sync\Observers\ApiDataObserver;
 
 #[ObservedBy(ApiDataObserver::class)]
 #[Fillable([

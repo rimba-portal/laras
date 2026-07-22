@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Actions;
 
-use Rimba\Sync\Contracts\DataFetcher;
 use Illuminate\Support\Facades\Http;
+use Rimba\Sync\Contracts\DataFetcher;
 
 class FetchRestData implements DataFetcher
 {

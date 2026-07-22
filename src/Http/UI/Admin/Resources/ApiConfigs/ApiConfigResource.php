@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs;
 
 use BackedEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
 use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages\CreateApiConfig;
 use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages\EditApiConfig;
 use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages\ListApiConfigs;
@@ -13,10 +17,6 @@ use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Schemas\ApiConfigForm;
 use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Schemas\ApiConfigInfolist;
 use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Tables\ApiConfigsTable;
 use Rimba\Sync\Models\ApiConfig;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
 use UnitEnum;
 
 class ApiConfigResource extends Resource

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Jobs;
 
-use Rimba\Sync\Models\ApiData;
-use Rimba\Sync\Services\ProcessingService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Rimba\Sync\Models\ApiData;
+use Rimba\Sync\Services\ProcessingService;
 
 class ProcessApiDataJob implements ShouldQueue
 {
