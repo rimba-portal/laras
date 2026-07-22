@@ -1,0 +1,30 @@
+{
+    "name": "rimba/laras",
+    "description": "Integration layer for external systems (APIs, imports/exports).",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "BIT Ecosystem",
+            "email": "bit.ecosystem@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "rimba/asas": "^1.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Rimba\\Sync\\SyncServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+           "Rimba\\Sync\\": "src/"
+        }
+    },
+    "minimum-stability": "alpha",
+    "prefer-stable": true
+}
