@@ -21,7 +21,7 @@ class SyncServiceProvider extends BitesServiceProvider
     {
         //
     }
-/**
+    /**
      * Dynamically discover and boot all commands inside the package directory.
      */
     protected function registerCommandsFromDirectory()
