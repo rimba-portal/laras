@@ -10,4 +10,7 @@ use Rimba\Sync\Http\UI\Admin\Resources\ApiData\ApiDataResource;
 class CreateApiData extends CreateRecord
 {
     protected static string $resource = ApiDataResource::class;
+
+    // Custom
+
 }

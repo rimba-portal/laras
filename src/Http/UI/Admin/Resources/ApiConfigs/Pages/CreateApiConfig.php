@@ -10,4 +10,7 @@ use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\ApiConfigResource;
 class CreateApiConfig extends CreateRecord
 {
     protected static string $resource = ApiConfigResource::class;
+
+    // Custom
+
 }
