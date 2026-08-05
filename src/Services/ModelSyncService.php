@@ -57,12 +57,8 @@ class ModelSyncService
     {
         $payloads = [];
 
-        if (isset($row['attributes']) && is_array($row['attributes'])) {
-            $payloads['attributes'] = $row['attributes'];
-        }
-
-        if (isset($row['extra']) && is_array($row['extra'])) {
-            $payloads['extra'] = $row['extra'];
+        if (isset($row['abac']) && is_array($row['abac'])) {
+            $payloads['abac'] = $row['abac'];
         }
 
         return $payloads;
