@@ -11,7 +11,7 @@ use Rimba\Sync\Models\ApiConfig;
 use Rimba\Sync\Services\FetchService;
 
 #[Description('Fetch data using API pipeline configs')]
-#[Signature('bites:fetch {identifier? : ID or name of the config}')]
+#[Signature('rimba:fetch {identifier? : ID or name of the config}')]
 class ApiFetchCommand extends Command
 {
     public function handle(): int

@@ -14,7 +14,7 @@ use Rimba\Sync\Models\ApiConfig;
 use Symfony\Component\Yaml\Yaml;
 
 #[Description('Sample top 10 raw rows from API config (JSON/YAML)')]
-#[Signature('bites:sample 
+#[Signature('rimba:sample 
                             {identifier? : ID or name of the config}
                             {--json : Output as JSON}
                             {--yaml : Output as YAML}')]
