@@ -59,6 +59,7 @@ class ModelSyncService
         if (isset($row['attributes']) && is_array($row['attributes'])) {
             $payloads['attributes'] = $row['attributes'];
         }
+
         return $payloads;
     }
 

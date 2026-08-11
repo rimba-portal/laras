@@ -214,7 +214,7 @@ class MappingService
 
         // Replace $value in SQL and bindings
         $sql = str_replace('$value', '?', $sql);
-        $bindings = array_map(fn($b) => $b === '$value' ? $value : $b, $bindings);
+        $bindings = array_map(fn ($b) => $b === '$value' ? $value : $b, $bindings);
 
         $result = DB::selectOne($sql, $bindings);
 
@@ -232,7 +232,7 @@ class MappingService
     protected function executeArtisanCommand(string $command, mixed $value): ?string
     {
         $command = str_replace('$value', escapeshellarg((string) $value), $command);
-        $shell = PHP_BINARY . ' artisan ' . $command . ' 2>&1';
+        $shell = PHP_BINARY.' artisan '.$command.' 2>&1';
 
         $output = trim(shell_exec($shell));
 
@@ -242,9 +242,9 @@ class MappingService
     protected function executePhpExpression(string $expression, mixed $value, array $item, array $field)
     {
         try {
-            return eval('return ' . $expression . ';');
+            return eval('return '.$expression.';');
         } catch (\Throwable $throwable) {
-            throw new \InvalidArgumentException(sprintf('PHP expression action [%s] failed: ', $expression) . $throwable->getMessage(), $throwable->getCode(), $throwable);
+            throw new \InvalidArgumentException(sprintf('PHP expression action [%s] failed: ', $expression).$throwable->getMessage(), $throwable->getCode(), $throwable);
         }
     }
 }
