@@ -56,11 +56,9 @@ class ModelSyncService
     protected function extractSeedPayloads(array $row): array
     {
         $payloads = [];
-
-        if (isset($row['abac']) && is_array($row['abac'])) {
-            $payloads['abac'] = $row['abac'];
+        if (isset($row['attributes']) && is_array($row['attributes'])) {
+            $payloads['attributes'] = $row['attributes'];
         }
-
         return $payloads;
     }
 
