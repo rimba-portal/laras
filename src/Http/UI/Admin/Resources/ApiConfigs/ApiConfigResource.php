@@ -23,15 +23,15 @@ class ApiConfigResource extends Resource
 {
     protected static ?string $model = ApiConfig::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ArrowSmallRight;
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Data Synchronization';
+    protected static string|UnitEnum|null $navigationGroup = 'Sync';
 
     protected static ?string $navigationLabel = 'Configurations';
 
-    protected static ?int $navigationSort = 41;
+    protected static ?int $navigationSort = 39;
 
     public static function form(Schema $schema): Schema
     {
