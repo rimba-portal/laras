@@ -38,31 +38,44 @@ class MappingService
             $usedKeys = [];
 
             foreach ($entity['fields'] as $field) {
-                $value = $this->resolveFieldValue($field, $item, $usedKeys);
+
+                $value = $this->resolveFieldValue(
+                    $field,
+                    $item,
+                    $usedKeys
+                );
 
                 if (isset($field['regex']) && is_string($value)) {
                     if (str_starts_with($field['regex'], '@')) {
-                        $value = $this->executePhpExpression(substr($field['regex'], 1), $value, $item, $field);
+                        $value = $this->executePhpExpression(
+                            substr($field['regex'], 1),
+                            $value,
+                            $item,
+                            $field
+                        );
                     } else {
-                        $value = preg_replace($field['regex'], '$1', $value) ?? $value;
+                        $value = preg_replace(
+                            $field['regex'],
+                            '$1',
+                            $value
+                        ) ?? $value;
                     }
                 }
 
-                // ✅ attribute mapping
-                foreach ($entity['attributes'] ?? [] as $attribute) {
-                    $value = $this->resolveFieldValue(
-                        $attribute,
-                        $item,
-                        $usedKeys
-                    );
-                    $key = $attribute['key'];
-                    $row['attributes'][$key] = $value;
-                }
-
-                // ✅ normal column mapping
                 if (isset($field['to'])) {
                     $row[$field['to']] = $value;
                 }
+            }
+
+            foreach ($entity['attributes'] ?? [] as $attribute) {
+
+                $value = $this->resolveFieldValue(
+                    $attribute,
+                    $item,
+                    $usedKeys
+                );
+
+                $row['attributes'][$attribute['key']] = $value;
             }
 
             if (isset($entity['skip_if'])) {
