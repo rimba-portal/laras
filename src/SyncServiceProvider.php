@@ -4,37 +4,40 @@ declare(strict_types=1);
 
 namespace Rimba\Sync;
 
-use Rimba\Base\Services\BitesServiceProvider;
 use Illuminate\Console\Command;
 use ReflectionClass;
-
+use Rimba\Base\Services\BitesServiceProvider;
 
 class SyncServiceProvider extends BitesServiceProvider
 {
-
     protected function bootPackage(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        if ($this->app->runningInConsole()) { $this->registerCommandsFromDirectory(); }
+        if ($this->app->runningInConsole()) {
+            $this->registerCommandsFromDirectory();
+        }
 
     }
+
     protected function registerPackage(): void
     {
         //
     }
+
     /**
      * Dynamically discover and boot all commands inside the package directory.
      */
     protected function registerCommandsFromDirectory()
     {
-        $commandDir = __DIR__ . '/Console/Commands';
+        $commandDir = __DIR__.'/Console/Commands';
         if (! is_dir($commandDir)) {
             return;
         }
+
         $commands = [];
-        foreach (glob($commandDir . '/*.php') as $file) {
+        foreach (glob($commandDir.'/*.php') as $file) {
             $className = basename($file, '.php');
-            $class = 'Rimba\\Sync\\Console\\Commands\\' . $className;
+            $class = 'Rimba\\Sync\\Console\\Commands\\'.$className;
             if (class_exists($class) && is_subclass_of($class, Command::class)) {
                 $reflection = new ReflectionClass($class);
                 if (! $reflection->isAbstract()) {
@@ -42,9 +45,9 @@ class SyncServiceProvider extends BitesServiceProvider
                 }
             }
         }
+
         if ($commands !== []) {
             $this->commands($commands);
         }
     }
-
 }
