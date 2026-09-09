@@ -51,9 +51,9 @@ final readonly class WorkforceSyncPipeline
                     $this->applyWorkforceTransition->execute($staff->id, $event, $assignment, $context);
                 }
 
-                $snapshot = $this->workforceSnapshotService->capture($run, $d, $hash);
+                $workforceSnapshot = $this->workforceSnapshotService->capture($run, $d, $hash);
                 foreach ($changes as $change) {
-                    WorkforceChange::create(['sync_run_id' => $run->id, 'snapshot_id' => $snapshot->id, 'source_uuid' => $uuid, 'field' => $change['field'], 'before_value' => $change['before'], 'after_value' => $change['after'], 'classification' => $event?->value, 'applied' => true, 'detected_at' => now()]);
+                    WorkforceChange::create(['sync_run_id' => $run->id, 'snapshot_id' => $workforceSnapshot->id, 'source_uuid' => $uuid, 'field' => $change['field'], 'before_value' => $change['before'], 'after_value' => $change['after'], 'classification' => $event?->value, 'applied' => true, 'detected_at' => now()]);
                 }
 
                 return new WorkforceSyncResult($uuid, $result, $changes, $event?->value);
