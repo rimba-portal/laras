@@ -7,6 +7,8 @@ namespace Rimba\Sync;
 use Illuminate\Console\Command;
 use ReflectionClass;
 use Rimba\Base\Services\BitesServiceProvider;
+use Rimba\Sync\Contracts\WorkforceRowNormalizer;
+use Rimba\Sync\Services\HrdbWorkforceNormalizer;
 
 class SyncServiceProvider extends BitesServiceProvider
 {
@@ -17,11 +19,14 @@ class SyncServiceProvider extends BitesServiceProvider
             $this->registerCommandsFromDirectory();
         }
 
+        $this->mergeConfigFrom(__DIR__.'/../config/workforce-sync.php', 'workforce-sync');
+
     }
 
     protected function registerPackage(): void
     {
-        //
+        $this->app->bind(WorkforceRowNormalizer::class, HrdbWorkforceNormalizer::class);
+
     }
 
     /**
