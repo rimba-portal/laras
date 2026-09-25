@@ -18,6 +18,7 @@ class SyncServiceProvider extends BitesServiceProvider
         if ($this->app->runningInConsole()) {
             $this->registerCommandsFromDirectory();
         }
+
         $this->mergeConfigFrom(__DIR__.'/../config/workforce-sync.php', 'workforce-sync');
 
     }
@@ -37,6 +38,7 @@ class SyncServiceProvider extends BitesServiceProvider
         if (! is_dir($commandDir)) {
             return;
         }
+
         $commands = [];
         foreach (glob($commandDir.'/*.php') as $file) {
             $className = basename($file, '.php');
@@ -48,6 +50,7 @@ class SyncServiceProvider extends BitesServiceProvider
                 }
             }
         }
+
         if ($commands !== []) {
             $this->commands($commands);
         }
