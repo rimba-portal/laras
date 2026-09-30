@@ -1,0 +1,22 @@
+<?php
+
+namespace Rimba\Sync\Http\UI\Admin\Resources\WorkforceSnapshots\Pages;
+
+use Filament\Actions\CreateAction;
+use Filament\Resources\Pages\ListRecords;
+
+class ListWorkforceSnapshots extends ListRecords
+{
+    protected static string $resource = \Rimba\Sync\Http\UI\Admin\Resources\WorkforceSnapshots\WorkforceSnapshotResource::class;
+
+    protected static ?string $title = 'Workforce Snapshots';
+
+    protected ?string $subheading = 'Capture raw background point-in-time reference payloads and checksums.';
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            CreateAction::make(),
+        ];
+    }
+}
