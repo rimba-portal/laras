@@ -1,17 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs;
 
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages\CreateApiConfig;
+use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages\EditApiConfig;
+use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages\ListApiConfigs;
+use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages\ViewApiConfig;
+use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Schemas\ApiConfigForm;
+use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Schemas\ApiConfigInfolist;
+use Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Tables\ApiConfigsTable;
+use Rimba\Sync\Models\ApiConfig;
+use UnitEnum;
 
 class ApiConfigResource extends Resource
 {
-    protected static ?string $model = \Rimba\Sync\Models\ApiConfig::class;
+    protected static ?string $model = ApiConfig::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'Sync';
 
@@ -21,26 +30,35 @@ class ApiConfigResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public static function form(Schema $schema): Schema { return \Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Schemas\ApiConfigForm::configure($schema); }
+    public static function form(Schema $schema): Schema
+    {
+        return ApiConfigForm::configure($schema);
+    }
 
-    public static function infolist(Schema $schema): Schema { return \Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Schemas\ApiConfigInfolist::configure($schema); }
+    public static function infolist(Schema $schema): Schema
+    {
+        return ApiConfigInfolist::configure($schema);
+    }
 
-    public static function table(Table $table): Table { return \Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Tables\ApiConfigsTable::configure($table); }
+    public static function table(Table $table): Table
+    {
+        return ApiConfigsTable::configure($table);
+    }
 
-    public static function getRelations(): array 
-    { 
-        return [ 
-            // 
+    public static function getRelations(): array
+    {
+        return [
+            //
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => \Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages\ListApiConfigs::route('/'),
-             'create' => \Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages\CreateApiConfig::route('/create'),
-             'view' => \Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages\ViewApiConfig::route('/{record}'),
-             'edit' => \Rimba\Sync\Http\UI\Admin\Resources\ApiConfigs\Pages\EditApiConfig::route('/{record}/edit'),
+            'index' => ListApiConfigs::route('/'),
+            'create' => CreateApiConfig::route('/create'),
+            'view' => ViewApiConfig::route('/{record}'),
+            'edit' => EditApiConfig::route('/{record}/edit'),
             //
         ];
     }
