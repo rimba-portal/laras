@@ -52,7 +52,7 @@ final class WorkforceEventClassificationService
             return WorkforceEventType::ShiftChanged;
         }
 
-        return $changes ? WorkforceEventType::Corrected : null;
+        return $changes !== [] ? WorkforceEventType::Corrected : null;
     }
 
     private function grade(mixed $v): int

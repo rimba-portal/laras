@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Rimba\Sync\Enums\WorkforceSyncRunStatus;
 use Rimba\Sync\Models\WorkforceChange;
+use Rimba\Sync\Models\WorkforceSnapshot;
 use Rimba\Sync\Models\WorkforceSyncRun;
 use Rimba\Sync\Support\WorkforceSyncResult;
 use Rimba\Wfm\Actions\ApplyWorkforceTransition;
@@ -31,7 +32,7 @@ final readonly class WorkforceSyncPipeline
                 $uuid = $d['source_uuid'];
                 $hash = $this->workforceSnapshotService->checksum($d);
                 $prev = $this->workforceSnapshotService->previous($run->source, $uuid);
-                if ($prev && $prev->checksum === $hash && config('workforce-sync.skip_unchanged', true)) {
+                if ($prev instanceof WorkforceSnapshot && $prev->checksum === $hash && config('workforce-sync.skip_unchanged', true)) {
                     return new WorkforceSyncResult($uuid, 'unchanged');
                 }
 
@@ -47,7 +48,7 @@ final readonly class WorkforceSyncPipeline
                         $this->separateWorkforce->execute($staff->id, $context);
                     } catch (\Throwable) {
                     }
-                } elseif ($event) {
+                } elseif ($event instanceof WorkforceEventType) {
                     $this->applyWorkforceTransition->execute($staff->id, $event, $assignment, $context);
                 }
 
