@@ -15,11 +15,11 @@ final class WorkforceEventClassificationService
         } $fields = array_column($changes, 'field');
         $old = (string) ($before['status'] ?? '');
         $new = (string) ($after['status'] ?? '');
-        if (in_array($new, config('workforce-sync.separated_statuses', []), true) && ! in_array($old, config('workforce-sync.separated_statuses', []), true)) {
+        if (in_array($new, config('bites.sync.separated_statuses', []), true) && ! in_array($old, config('bites.sync.separated_statuses', []), true)) {
             return WorkforceEventType::Separated;
         }
 
-        if (in_array($new, config('workforce-sync.active_statuses', []), true) && in_array($old, config('workforce-sync.separated_statuses', []), true)) {
+        if (in_array($new, config('bites.sync.active_statuses', []), true) && in_array($old, config('bites.sync.separated_statuses', []), true)) {
             return WorkforceEventType::Rehired;
         }
 

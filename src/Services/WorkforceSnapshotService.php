@@ -28,7 +28,7 @@ final class WorkforceSnapshotService
 
     public function capture(WorkforceSyncRun $run, array $data, string $checksum): WorkforceSnapshot
     {
-        return WorkforceSnapshot::create(['sync_run_id' => $run->id, 'source' => $run->source, 'source_uuid' => $data['source_uuid'], 'checksum' => $checksum, 'payload' => config('workforce-sync.store_normalized_payload', true) ? $data : null, 'source_modified_at' => $data['source_modified_at'] ?? null, 'captured_at' => now()]);
+        return WorkforceSnapshot::create(['sync_run_id' => $run->id, 'source' => $run->source, 'source_uuid' => $data['source_uuid'], 'checksum' => $checksum, 'payload' => config('bites.sync.store_normalized_payload', true) ? $data : null, 'source_modified_at' => $data['source_modified_at'] ?? null, 'captured_at' => now()]);
     }
 
     private function sort(array $a): array

@@ -11,7 +11,7 @@ final class WorkforceChangeDetectionService
         if ($before === null) {
             return [['field' => '__record__', 'before' => null, 'after' => $after]];
         } $out = [];
-        foreach (config('workforce-sync.tracked_fields', []) as $f) {
+        foreach (config('bites.sync.tracked_fields', []) as $f) {
             $a = data_get($before, $f);
             $b = data_get($after, $f);
             if ($this->norm($a) !== $this->norm($b)) {

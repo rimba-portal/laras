@@ -21,7 +21,7 @@ final readonly class WorkforceSyncPipeline
 
     public function start(?int $apiConfigId = null): WorkforceSyncRun
     {
-        return WorkforceSyncRun::create(['uuid' => (string) Str::uuid(), 'api_config_id' => $apiConfigId, 'source' => config('workforce-sync.source', 'hrdb'), 'status' => WorkforceSyncRunStatus::Running, 'started_at' => now()]);
+        return WorkforceSyncRun::create(['uuid' => (string) Str::uuid(), 'api_config_id' => $apiConfigId, 'source' => config('bites.sync.source', 'hrdb'), 'status' => WorkforceSyncRunStatus::Running, 'started_at' => now()]);
     }
 
     public function process(WorkforceSyncRun $run, array $raw): WorkforceSyncResult
@@ -32,7 +32,7 @@ final readonly class WorkforceSyncPipeline
                 $uuid = $d['source_uuid'];
                 $hash = $this->workforceSnapshotService->checksum($d);
                 $prev = $this->workforceSnapshotService->previous($run->source, $uuid);
-                if ($prev instanceof WorkforceSnapshot && $prev->checksum === $hash && config('workforce-sync.skip_unchanged', true)) {
+                if ($prev instanceof WorkforceSnapshot && $prev->checksum === $hash && config('bites.sync.skip_unchanged', true)) {
                     return new WorkforceSyncResult($uuid, 'unchanged');
                 }
 
