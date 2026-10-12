@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Rimba\Sync\Services;
 
 use Illuminate\Database\Eloquent\Model;
-use Rimba\Attributing\Actions\SyncAssignableAbacRolesAction;
+use Rimba\Attributing\Actions\SyncStaffAbacRolesAction;
+use Rimba\People\Models\Staff;
 
 class ModelSyncService
 {
@@ -47,10 +48,11 @@ class ModelSyncService
 
         if (
             isset($seedPayloads['attributes']) &&
-            method_exists($model, 'personAttributes')
+            method_exists($model, 'personAttributes') &&
+            ($model instanceof Staff)
         ) {
             app(
-                SyncAssignableAbacRolesAction::class
+                SyncStaffAbacRolesAction::class
             )->execute($model);
         }
 
