@@ -14,103 +14,147 @@ class ModelSyncService
         string $modelClass,
         ?string $uniqueBy,
         bool $addAbacs,
-        array $row
+        array $row,
     ): ?Model {
         /** @var Model $prototype */
         $prototype = new $modelClass;
 
-        $fillable = array_flip($prototype->getFillable());
-
+        /*
+         * Extract mapped relationship-style payloads before
+         * filtering the ordinary model fields.
+         */
         $seedPayloads = $this->extractSeedPayloads($row);
 
-        $fillableRow = array_intersect_key($row, $fillable);
+        $fillable = array_flip(
+            $prototype->getFillable()
+        );
 
-        $remaining = array_diff_key($row, $fillable);
+        $fillableRow = array_intersect_key(
+            $row,
+            $fillable
+        );
 
-        unset($remaining['attributes'], $remaining['extra']);
+        /*
+         * Person attributes belong in person_attributes,
+         * not in the model's legacy attributes JSON column.
+         */
+        unset($fillableRow['attributes']);
 
-        if ($uniqueBy && isset($fillableRow[$uniqueBy])) {
-            /** @var Model $model */
-            $model = $modelClass::query()->updateOrCreate(
-                [$uniqueBy => $fillableRow[$uniqueBy]],
-                $fillableRow
-            );
-        } else {
-            /** @var Model $model */
-            $model = $modelClass::query()->create($fillableRow);
-        }
+        $remaining = array_diff_key(
+            $row,
+            $fillable
+        );
 
-        $this->applySeedMappings(
-            $model,
-            $modelClass,
-            $seedPayloads
+        unset(
+            $remaining['attributes'],
+            $remaining['extra'],
         );
 
         if (
-            isset($seedPayloads['attributes']) &&
-            method_exists($model, 'personAttributes') &&
-            ($model instanceof Staff)
+            $uniqueBy
+            && array_key_exists($uniqueBy, $fillableRow)
         ) {
-            app(
-                SyncStaffAbacRolesAction::class
-            )->execute($model);
+            /** @var Model $model */
+            $model = $modelClass::query()->updateOrCreate(
+                [
+                    $uniqueBy => $fillableRow[$uniqueBy],
+                ],
+                $fillableRow,
+            );
+        } else {
+            /** @var Model $model */
+            $model = $modelClass::query()->create(
+                $fillableRow
+            );
         }
 
+        /*
+         * Persist the API mapping's "attributes" payload
+         * through Sifat's canonical person-attribute method.
+         */
+        $this->applyPersonAttributes(
+            model: $model,
+            payloads: $seedPayloads,
+        );
+
+        /*
+         * Staff synchronization is required after Staff-owned
+         * person attributes have been persisted.
+         *
+         * JobPosition-owned attributes create role definitions
+         * through PersonAttributeObserver. Staff inherits those
+         * roles when its AgreementScope is created.
+         */
         if (
-            $addAbacs &&
-            $remaining !== [] &&
-            method_exists($model, 'setAbac')
+            $model instanceof Staff
+            && isset($seedPayloads['attributes'])
+        ) {
+            app(SyncStaffAbacRolesAction::class)
+                ->execute($model);
+        }
+
+        /*
+         * Retain legacy add_abac handling for unmatched values
+         * only. It is not responsible for mapped attributes.
+         */
+        if (
+            $addAbacs
+            && $remaining !== []
+            && method_exists($model, 'setAbac')
         ) {
             foreach ($remaining as $key => $value) {
                 if ($value === null || $value === '') {
                     continue;
                 }
 
-                $model->setAbac($key, $value);
+                $model->setAbac(
+                    $key,
+                    $value,
+                );
             }
         }
 
         return $model;
     }
 
-    protected function extractSeedPayloads(array $row): array
-    {
+    protected function extractSeedPayloads(
+        array $row
+    ): array {
         $payloads = [];
-        if (isset($row['attributes']) && is_array($row['attributes'])) {
-            $payloads['attributes'] = $row['attributes'];
+
+        if (
+            isset($row['attributes'])
+            && is_array($row['attributes'])
+        ) {
+            $payloads['attributes'] =
+                $row['attributes'];
         }
 
         return $payloads;
     }
 
-    protected function applySeedMappings(Model $model, string $modelClass, array $payloads): void
-    {
-        if ($payloads === []) {
+    protected function applyPersonAttributes(
+        Model $model,
+        array $payloads,
+    ): void {
+        $attributes = $payloads['attributes'] ?? null;
+
+        if (
+            ! is_array($attributes)
+            || $attributes === []
+        ) {
             return;
         }
 
-        if (! method_exists($modelClass, 'seedMappings')) {
+        if (! method_exists(
+            $model,
+            'syncPersonAttributes'
+        )) {
             return;
         }
 
-        $mappings = $modelClass::seedMappings();
-
-        foreach ($payloads as $sourceKey => $payload) {
-            if (! isset($mappings[$sourceKey])) {
-                continue;
-            }
-
-            $method = $mappings[$sourceKey];
-
-            if (! is_string($method)) {
-                continue;
-            }
-
-            if (! method_exists($model, $method)) {
-                continue;
-            }
-
-            $model->{$method}($payload);
-        }
+        $model->syncPersonAttributes(
+            $attributes
+        );
     }
 }
