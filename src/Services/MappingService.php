@@ -5,15 +5,54 @@ declare(strict_types=1);
 namespace Rimba\Sync\Services;
 
 use Illuminate\Support\Facades\DB;
+use Rimba\Attributing\Actions\SyncStaffAbacRolesAction;
+use Rimba\People\Models\Staff;
 use Rimba\Sync\Models\ApiData;
 
 class MappingService
 {
     public function run(ApiData $data): void
     {
+        /*
+         * First create/update every configured entity:
+         *
+         * 1. JobPosition
+         * 2. Staff
+         * 3. Agreement
+         * 4. AgreementScope
+         */
         foreach ($data->apiConfig->mapping as $entity) {
-            $this->processEntity($entity, $data->payload);
+            $this->processEntity(
+                $entity,
+                $data->payload,
+            );
         }
+
+        /*
+         * Agreements and AgreementScopes now exist.
+         *
+         * Recalculate Staff roles only after the complete
+         * mapping has finished.
+         */
+        $this->syncStaffAbacRoles();
+    }
+
+    private function syncStaffAbacRoles(): void
+    {
+        /** @var SyncStaffAbacRolesAction $syncStaffAbacRolesAction */
+        $syncStaffAbacRolesAction = app(
+            SyncStaffAbacRolesAction::class
+        );
+
+        Staff::query()
+            ->with([
+                'user',
+                'personAttributes',
+                'jobPosition.personAttributes',
+            ])
+            ->each(
+                fn (Staff $staff): mixed => $syncStaffAbacRolesAction->execute($staff),
+            );
     }
 
     protected function processEntity(array $entity, array $payload, $parent = null): void

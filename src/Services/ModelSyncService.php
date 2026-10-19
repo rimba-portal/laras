@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rimba\Sync\Services;
 
 use Illuminate\Database\Eloquent\Model;
-use Rimba\Attributing\Actions\SyncStaffAbacRolesAction;
-use Rimba\People\Models\Staff;
 
 class ModelSyncService
 {
@@ -20,8 +18,8 @@ class ModelSyncService
         $prototype = new $modelClass;
 
         /*
-         * Extract mapped relationship-style payloads before
-         * filtering the ordinary model fields.
+         * Extract mapped person attributes before filtering
+         * ordinary model fields.
          */
         $seedPayloads = $this->extractSeedPayloads($row);
 
@@ -35,8 +33,7 @@ class ModelSyncService
         );
 
         /*
-         * Person attributes belong in person_attributes,
-         * not in the model's legacy attributes JSON column.
+         * attributes are stored in person_attributes.
          */
         unset($fillableRow['attributes']);
 
@@ -69,8 +66,7 @@ class ModelSyncService
         }
 
         /*
-         * Persist the API mapping's "attributes" payload
-         * through Sifat's canonical person-attribute method.
+         * Persist explicitly mapped person attributes.
          */
         $this->applyPersonAttributes(
             model: $model,
@@ -78,24 +74,7 @@ class ModelSyncService
         );
 
         /*
-         * Staff synchronization is required after Staff-owned
-         * person attributes have been persisted.
-         *
-         * JobPosition-owned attributes create role definitions
-         * through PersonAttributeObserver. Staff inherits those
-         * roles when its AgreementScope is created.
-         */
-        if (
-            $model instanceof Staff
-            && isset($seedPayloads['attributes'])
-        ) {
-            app(SyncStaffAbacRolesAction::class)
-                ->execute($model);
-        }
-
-        /*
-         * Retain legacy add_abac handling for unmatched values
-         * only. It is not responsible for mapped attributes.
+         * Legacy unmatched-value ABAC handling.
          */
         if (
             $addAbacs
