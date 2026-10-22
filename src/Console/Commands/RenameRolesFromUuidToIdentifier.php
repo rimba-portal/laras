@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Console\Commands;
 
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -13,22 +15,10 @@ use Rimba\Organization\Models\OrgUnit;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
+#[Description('Step 2: Replace trailing UUIDs in Spatie role names with readable identifiers from OrgTeam, OrgUnit, and OrgCorp')]
+#[Signature('rimba:rename-uuid-roles {--dry-run : Execute dry-run mapping verification without persisting changes}')]
 class RenameRolesFromUuidToIdentifier extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'rimba:rename-uuid-roles {--dry-run : Execute dry-run mapping verification without persisting changes}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Step 2: Replace trailing UUIDs in Spatie role names with readable identifiers from OrgTeam, OrgUnit, and OrgCorp';
-
     /**
      * Execute the console command.
      */
@@ -61,10 +51,10 @@ class RenameRolesFromUuidToIdentifier extends Command
 
         $anyChangesMade = false;
 
-        foreach ($configurations as $config) {
-            $prefix = $config['prefix'];
-            $modelClass = $config['model'];
-            $getter = $config['getter'];
+        foreach ($configurations as $configuration) {
+            $prefix = $configuration['prefix'];
+            $modelClass = $configuration['model'];
+            $getter = $configuration['getter'];
 
             $this->newLine();
             $this->info("🔍 Processing Prefix Pattern: [{$prefix}] matching target [{$modelClass}]");
@@ -84,7 +74,7 @@ class RenameRolesFromUuidToIdentifier extends Command
                 // Checks if the model has a unified custom 'scopeWhereUuid' method implemented
                 $query = $modelClass::query();
 
-                if (method_exists($modelClass, 'scopeWhereUuid')) {
+                if (method_exists($modelClass, 'WhereUuid')) {
                     $record = $query->whereUuid($uuid)->first();
                 } else {
                     $record = $query->where('uuid', $uuid)->first();
@@ -128,7 +118,7 @@ class RenameRolesFromUuidToIdentifier extends Command
                 $this->line("🔄 Mapping candidate: [{$role->name}] ➡️ [{$newRoleName}]");
 
                 if (! $isDryRun) {
-                    DB::transaction(function () use ($role, $newRoleName) {
+                    DB::transaction(function () use ($role, $newRoleName): void {
                         $role->name = $newRoleName;
                         $role->save();
                     });

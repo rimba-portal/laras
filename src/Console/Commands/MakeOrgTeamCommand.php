@@ -4,28 +4,18 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Console\Commands;
 
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Rimba\Organization\Models\OrgTeam;
 use Rimba\People\Models\Staff;
 use Spatie\Permission\Models\Role;
 
+#[Description('Step 1: Parse staff◇team◇ roles by Staff UUID and upsert corresponding OrgTeam records matching attributes->uuid')]
+#[Signature('rimba:leaders-team {--dry-run : Simulate team creations without saving}')]
 class MakeOrgTeamCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'rimba:leaders-team {--dry-run : Simulate team creations without saving}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Step 1: Parse staff◇team◇ roles by Staff UUID and upsert corresponding OrgTeam records matching attributes->uuid';
-
     /**
      * Execute the console command.
      */
