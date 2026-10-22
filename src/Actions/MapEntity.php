@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rimba\Sync\Actions;
 
-use App\ProcessTrace;
+use App\Support\ProcessTrace;
 use Illuminate\Database\Eloquent\Model;
 use Rimba\People\Models\Staff;
 use Rimba\Sync\Services\ModelSyncService;

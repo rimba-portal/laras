@@ -10,59 +10,30 @@ use Throwable;
 
 class ExecuteMappingAction
 {
-    public function execute(
-        mixed $action,
-        mixed $value,
-        array $item,
-        array $field,
-    ): mixed {
+    public function execute(mixed $action, mixed $value, array $item, array $field): mixed
+    {
         /*
          * PHP expression:
          *
          * 'do' => '@(...)'
          */
-        if (
-            is_string($action)
-            && str_starts_with($action, '@')
-        ) {
-            return $this->expression(
-                expression: substr($action, 1),
-                value: $value,
-                item: $item,
-                field: $field,
-            );
+        if (is_string($action) && str_starts_with($action, '@')) {
+            return $this->expression(expression: substr($action, 1), value: $value, item: $item, field: $field);
         }
 
         /*
          * Structured action.
          */
         if (is_array($action)) {
-            if (
-                isset($action['artisan'])
-                || isset($action['command'])
-            ) {
+            if (isset($action['artisan']) || isset($action['command'])) {
                 if (isset($action['transform'])) {
-                    $value = $this->transform(
-                        transform: $action['transform'],
-                        value: $value,
-                        item: $item,
-                        field: $field,
-                    );
+                    $value = $this->transform(transform: $action['transform'], value: $value, item: $item, field: $field);
                 }
 
-                return $this->artisan(
-                    command: $action['artisan']
-                        ?? $action['command'],
-                    value: $value,
-                );
+                return $this->artisan(command: $action['artisan'] ?? $action['command'], value: $value);
             }
 
-            return $this->query(
-                query: $action,
-                value: $value,
-                item: $item,
-                field: $field,
-            );
+            return $this->query(query: $action, value: $value, item: $item, field: $field);
         }
 
         /*
@@ -92,9 +63,7 @@ class ExecuteMappingAction
         array $field,
     ): mixed {
         try {
-            return eval(
-                'return '.$expression.';'
-            );
+            return eval('return '.$expression.';');
         } catch (Throwable $throwable) {
             throw new InvalidArgumentException(
                 sprintf(
@@ -189,8 +158,8 @@ class ExecuteMappingAction
 
         $bindings = array_map(
             static fn (mixed $binding): mixed => $binding === '$value'
-                    ? $value
-                    : $binding,
+                ? $value
+                : $binding,
             $bindings
         );
 
