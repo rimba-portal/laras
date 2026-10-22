@@ -41,14 +41,8 @@ class ExecuteMappingAction
          *
          * artisan:command...
          */
-        if (
-            is_string($action)
-            && str_starts_with($action, 'artisan:')
-        ) {
-            return $this->artisan(
-                command: substr($action, 8),
-                value: $value,
-            );
+        if (is_string($action) && str_starts_with($action, 'artisan:')) {
+            return $this->artisan(command: substr($action, 8), value: $value);
         }
 
         throw new InvalidArgumentException(
@@ -56,12 +50,8 @@ class ExecuteMappingAction
         );
     }
 
-    public function expression(
-        string $expression,
-        mixed $value,
-        array $item,
-        array $field,
-    ): mixed {
+    public function expression(string $expression, mixed $value, array $item, array $field): mixed
+    {
         try {
             return eval('return '.$expression.';');
         } catch (Throwable $throwable) {
@@ -77,97 +67,49 @@ class ExecuteMappingAction
         }
     }
 
-    protected function query(
-        array $query,
-        mixed $value,
-        array $item,
-        array $field,
-    ): mixed {
+    protected function query(array $query, mixed $value, array $item, array $field): mixed
+    {
         if (isset($query['query'])) {
-            return $this->rawQuery(
-                query: $query,
-                value: $value,
-            );
+            return $this->rawQuery(query: $query, value: $value);
         }
 
         $modelClass = $query['model'] ?? null;
-
-        if (
-            ! is_string($modelClass)
-            || ! class_exists($modelClass)
-        ) {
-            throw new InvalidArgumentException(
-                "Query action requires a valid 'model' class."
-            );
+        if (! is_string($modelClass) || ! class_exists($modelClass)) {
+            throw new InvalidArgumentException("Query action requires a valid 'model' class.");
         }
 
         $queryBuilder = $modelClass::query();
-
-        foreach (
-            $query['where'] ?? [] as $column => $condition
-        ) {
-            if (
-                is_string($condition)
-                && str_contains($condition, '$value')
-            ) {
-                $condition = str_replace(
-                    '$value',
-                    (string) $value,
-                    $condition
-                );
+        foreach ($query['where'] ?? [] as $column => $condition) {
+            if (is_string($condition) && str_contains($condition, '$value')) {
+                $condition = str_replace('$value', (string) $value, $condition);
             }
 
-            $queryBuilder->where(
-                $column,
-                $condition
-            );
+            $queryBuilder->where($column, $condition);
         }
 
         if (isset($query['value'])) {
-            return $queryBuilder->value(
-                $query['value']
-            );
+            return $queryBuilder->value($query['value']);
         }
 
         if (isset($query['first'])) {
             $record = $queryBuilder->first();
 
-            return $record?->getAttribute(
-                $query['first']
-            );
+            return $record?->getAttribute($query['first']);
         }
 
-        throw new InvalidArgumentException(
-            "Query action must specify 'value', 'first', or 'query'."
-        );
+        throw new InvalidArgumentException("Query action must specify 'value', 'first', or 'query'.");
     }
 
-    protected function rawQuery(
-        array $query,
-        mixed $value,
-    ): mixed {
+    protected function rawQuery(array $query, mixed $value): mixed
+    {
         $sql = $query['query'];
-
         $bindings = $query['bindings'] ?? [];
-
-        $sql = str_replace(
-            '$value',
-            '?',
-            $sql
-        );
-
+        $sql = str_replace('$value', '?', $sql);
         $bindings = array_map(
-            static fn (mixed $binding): mixed => $binding === '$value'
-                ? $value
-                : $binding,
+            static fn (mixed $binding): mixed => $binding === '$value' ? $value : $binding,
             $bindings
         );
-
-        $result = DB::selectOne(
-            $sql,
-            $bindings
-        );
-
+        $result = DB::selectOne($sql, $bindings);
         if ($result === null) {
             return null;
         }
@@ -179,54 +121,23 @@ class ExecuteMappingAction
         return $result;
     }
 
-    protected function artisan(
-        string $command,
-        mixed $value,
-    ): ?string {
-        $command = str_replace(
-            '$value',
-            escapeshellarg((string) $value),
-            $command
-        );
+    protected function artisan(string $command, mixed $value): ?string
+    {
+        $command = str_replace('$value', escapeshellarg((string) $value), $command);
+        $shell = PHP_BINARY.' artisan '.$command.' 2>&1';
+        $output = trim((string) shell_exec($shell));
 
-        $shell = PHP_BINARY
-            .' artisan '
-            .$command
-            .' 2>&1';
-
-        $output = trim(
-            (string) shell_exec($shell)
-        );
-
-        return $output === ''
-            ? null
-            : $output;
+        return $output === '' ? null : $output;
     }
 
-    protected function transform(
-        mixed $transform,
-        mixed $value,
-        array $item,
-        array $field,
-    ): mixed {
-        if (
-            is_string($transform)
-            && str_starts_with($transform, '@')
-        ) {
-            return $this->expression(
-                expression: substr($transform, 1),
-                value: $value,
-                item: $item,
-                field: $field,
-            );
+    protected function transform(mixed $transform, mixed $value, array $item, array $field): mixed
+    {
+        if (is_string($transform) && str_starts_with($transform, '@')) {
+            return $this->expression(expression: substr($transform, 1), value: $value, item: $item, field: $field);
         }
 
         if (is_callable($transform)) {
-            return $transform(
-                $value,
-                $item,
-                $field
-            );
+            return $transform($value, $item, $field);
         }
 
         return $transform;
